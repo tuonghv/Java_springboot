@@ -1,0 +1,20 @@
+https://www.confluent.io/blog/apache-kafka-spring-boot-application/?utm_medium=sem&utm_source=google&utm_campaign=ch.sem_br.nonbrand_tp.prs_tgt.kafka_mt.mbm_rgn.apac_lng.eng_dv.all&utm_term=%2Bkafka%20%2Bspring&creative=&device=c&placement=&gclid=Cj0KCQiA5vb-BRCRARIsAJBKc6KJmrgKAP2OI7H0RO4-Frr0wHlPatWUxzeQNMOUAfj2KLxW8kBZjBIaAj1xEALw_wcB
+
+
+https://github.com/igorkosandyak/spring-boot-kafka
+
+
+## start kafka
+/home/kafka/Docker
+docker-compose up -d
+
+
+
+cd /home/kafka/igorkosandyak/spring-boot-kafka-master
+mvn clean package 
+
+
+java -jar target/spring-boot-with-kafka-0.0.1-SNAPSHOT.jar
+
+## test
+curl -X POST -F 'message=test' http://localhost:9000/kafka/publish

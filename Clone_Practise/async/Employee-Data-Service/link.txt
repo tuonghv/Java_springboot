@@ -1,0 +1,13 @@
+
+https://howtodoinjava.com/spring-boot2/rest/enableasync-async-controller/
+
+
+java -jar target/com.howtodoinjava.example.sampleservice-0.0.1-SNAPSHOT.jar
+java -jar target/com.howtodoinjava.example.asynch-0.0.1-SNAPSHOT.jar
+http://192.168.1.200:8081/testAsynch
+
+
+http://192.168.1.200:8080/phones
+http://192.168.1.200:8080/names
+
+http://localhost:8080/addresses

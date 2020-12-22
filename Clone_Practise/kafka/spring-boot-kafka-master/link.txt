@@ -1,0 +1,7 @@
+https://github.com/stackjava/spring-boot-kafka
+https://stackjava.com/spring-boot/code-vi-du-spring-boot-kafka-produce-consume-kafka-spring.html
+
+
+java -jar target/spring-boot-kafka-0.0.1-SNAPSHOT.jar
+
+

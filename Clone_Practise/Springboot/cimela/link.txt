@@ -1,0 +1,7 @@
+
+https://medium.com/@quyen.it1423/provide-async-rest-api-with-spring-boot-2-part-1-218ca84723a3
+
+java -jar target/async-rest-api-0.1.0.jar
+async-rest-api-0.1.0.jar
+
+http://192.168.1.200:8080/api/v1/task

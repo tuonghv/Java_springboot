@@ -1,0 +1,57 @@
+source: https://kafka.js.org/docs/running-kafka-in-development
+
+D:\learn\kafka
+
+cd /home/kafka/Docker
+ docker-compose up -d
+
+# kafka https://kafka.apache.org/quickstart
+# tao topic
+cd $KAFKA_HOME
+
+KAFKA_VERSION=2.2.0
+
+
+
+bin/kafka-topics.sh --create --topic test1  --bootstrap-server localhost:9092  --partitions 1 --replication-factor 1
+
+bin/kafka-topics.sh --create --topic demo  --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092  --partitions 3 --replication-factor 3
+
+./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test
+
+
+
+
+------------------------------NEW VERSION
+
+
+
+nen dung ver
+pt/kafka_2.13-2.6.0 #
+KAFKA_VERSION=2.6.0
+SCALA_VERSION=2.13
+
+
+
+
+
+
+
+cd $KAFKA_HOME
+
+bin/kafka-topics.sh --create --topic quickstart-events --bootstrap-server localhost:9092
+
+
+/opt/kafka_2.13-2.6.0 # bin/kafka-topics.sh --describe --topic quickstart-events --bootstrap-server localhost:9092
+Topic: quickstart-events        PartitionCount: 1       ReplicationFactor: 1    Configs: segment.bytes=1073741824
+        Topic: quickstart-events        Partition: 0    Leader: none    Replicas: 1006  Isr: 1006
+
+
+
+bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server kafka:9092
+
+
+lientId=console-producer] 1 partitions have leader brokers without a matching listener, including [qui
+
