@@ -1,0 +1,25 @@
+
+cd /home/maven_project/my-app-properties
+mvn clean package
+
+
+-Dconfig.file=my_app.conf
+
+
+cd config.properties ./target/config.properties
+cd target
+ java \
+  -cp my-app-1.0-SNAPSHOT.jar \
+  com.realtut.ReadPropertiesExample1
+  
+cd target
+ java \
+  -cp my-app-1.0-SNAPSHOT.jar \
+  com.realtut.ReadPropertiesExample2
+
+ java \
+  -cp my-app-1.0-SNAPSHOT.jar \
+  com.realtut.Test
+  
+public class Properties
+   extends Hashtable<Object,Object>

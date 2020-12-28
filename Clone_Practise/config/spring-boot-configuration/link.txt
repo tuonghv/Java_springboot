@@ -1,0 +1,6 @@
+** build chu y khi build spring phai dung: spring-boot-maven-plugin
+** run phai dung: java -jar
+
+cd /home/maven_project/spring-boot-configuration/target
+ 
+java -jar myapp-0.0.1-SNAPSHOT.jar

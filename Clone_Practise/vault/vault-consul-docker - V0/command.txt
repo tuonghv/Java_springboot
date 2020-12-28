@@ -1,0 +1,405 @@
+# https://testdriven.io/blog/managing-secrets-with-vault-and-consul/
+https://learn.hashicorp.com/tutorials/vault/getting-started-deploy
+
+cd /home/vault/vault-consul-docker
+docker-compose up -d --build
+
+docker-compose logs
+
+docker-compose exec vault bash
+vault operator init
+
+################################
+[root@centos vault-consul-docker]# docker-compose exec vault bash
+bash-5.0# vault operator init
+Unseal Key 1: PILKVn9hCYPQYISHus+RKoqLtfbY9SetfRMu5SBC5ik2
+Unseal Key 2: oYYorKafY+lDGBm1ny1y39mF4IfDAROEzrNs0k3acRl5
+Unseal Key 3: Bdqp4fi2MKnFqSGrqzAs1kuuVF/z6uoKsR8DnLsOzJYT
+Unseal Key 4: PQGfv8gIEVznzNOOL8x9mNfYLrhAxFJdzuf4pqaypxbq
+Unseal Key 5: ptPrQOvDjho9caJHFFIYVmB3YB8lmySFmYIULWOG2ZPY
+
+Initial Root Token: s.pYKW58JhjIrkEIl6LqGzIfoa
+
+Vault initialized with 5 key shares and a key threshold of 3. Please securely
+distribute the key shares printed above. When the Vault is re-sealed,
+restarted, or stopped, you must supply at least 3 of these keys to unseal it
+before it can start servicing requests.
+
+Vault does not store the generated master key. Without at least 3 key to
+reconstruct the master key, Vault will remain permanently sealed!
+
+It is possible to generate new unseal keys, provided you have a quorum of
+existing unseal keys shares. See "vault operator rekey" for more information.
+
+
+
+#############
+#Mo khoa
+bash-5.0# vault operator unseal
+Unseal Key (will be hidden):
+Key                Value
+---                -----
+Seal Type          shamir
+Initialized        true
+Sealed             true
+Total Shares       5
+Threshold          3
+Unseal Progress    1/3
+Unseal Nonce       2d778a84-b66d-eb8e-2ccc-9d56e7b8b68c
+Version            1.4.0
+HA Enabled         false
+
+## mo khoa lan 2
+bash-5.0# vault operator unseal
+Unseal Key (will be hidden):
+Key                Value
+---                -----
+Seal Type          shamir
+Initialized        true
+Sealed             true
+Total Shares       5
+Threshold          3
+Unseal Progress    2/3
+Unseal Nonce       2d778a84-b66d-eb8e-2ccc-9d56e7b8b68c
+Version            1.4.0
+HA Enabled         false
+
+## mo khoa thanh cong
+bash-5.0# vault operator unseal
+Unseal Key (will be hidden):
+Key             Value
+---             -----
+Seal Type       shamir
+Initialized     true
+Sealed          false
+Total Shares    5
+Threshold       3
+Version         1.4.0
+Cluster Name    vault-cluster-48668339
+Cluster ID      b03b01f0-1530-e0fd-3ccf-1943a3a70fe9
+HA Enabled      false
+
+
+
+### When the value for Sealed changes to false, the Vault is unsealed.
+
+
+vault login <Initial_Root_Token>
+vault login s.pYKW58JhjIrkEIl6LqGzIfoa
+
+bash-5.0# vault login s.pYKW58JhjIrkEIl6LqGzIfoa
+Success! You are now authenticated. The token information displayed below
+is already stored in the token helper. You do NOT need to run "vault login"
+again. Future Vault requests will automatically use this token.
+
+Key                  Value
+---                  -----
+token                s.pYKW58JhjIrkEIl6LqGzIfoa
+token_accessor       x4LxCiUPu8kK3JTKjbbLAErM
+token_duration       ∞
+token_renewable      false
+token_policies       ["root"]
+identity_policies    []
+policies             ["root"]
+
+
+
+
+### Auditing
+vault audit enable file file_path=/vault/logs/audit.log
+
+bash-5.0# vault audit enable file file_path=/vault/logs/audit.log
+Success! Enabled the file audit device at: file/
+
+vault audit list
+
+
+## Static Secrets
+# Enable secrets with following command:
+bash-5.0# vault secrets enable kv
+Success! Enabled the kv secrets engine at: kv/
+# Create a new secret with a key of bar and value of precious within the kv/foo path:
+
+bash-5.0# vault kv put kv/foo bar=precious
+Success! Data written to: kv/foo
+
+# Read:
+bash-5.0# vault kv get kv/foo
+=== Data ===
+Key    Value
+---    -----
+bar    precious
+
+
+# To work with different versions of a specific key, we'll need to upgrade to v2 of the Key/Value backend:
+bash-5.0# vault kv enable-versioning kv/
+Success! Tuned the secrets engine at: kv/
+
+# Add version 2 by updating the value to copper:
+bash-5.0# vault kv put kv/foo bar=copper
+Key              Value
+---              -----
+created_time     2020-12-26T04:05:48.324791516Z
+deletion_time    n/a
+destroyed        false
+version          2
+
+# Read version 1:
+bash-5.0# vault kv get -version=1 kv/foo
+====== Metadata ======
+Key              Value
+---              -----
+created_time     2020-12-26T04:05:02.382983908Z
+deletion_time    n/a
+destroyed        false
+version          1
+
+=== Data ===
+Key    Value
+---    -----
+bar    precious
+
+
+bash-5.0# vault kv get -version=2 kv/foo
+====== Metadata ======
+Key              Value
+---              -----
+created_time     2020-12-26T04:05:48.324791516Z
+deletion_time    n/a
+destroyed        false
+version          2
+
+=== Data ===
+Key    Value
+---    -----
+bar    copper
+
+## check lasted version
+vault kv get  kv/foo
+
+
+##Delete the latest version (e.g., version 2):
+vault kv get  kv/foo
+
+# Delete version 1:
+vault kv delete -versions=1 kv/foo
+
+# You can undelete as well:
+vault kv undelete -versions=1 kv/foo
+
+## Delete is akin to a soft delete
+
+
+
+
+
+
+
+
+### API
+export VAULT_TOKEN=s.pYKW58JhjIrkEIl6LqGzIfoa
+
+# Create a new secret called foo with a value of world:
+curl \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d '{ "data": { "foo": "world" } }' \
+    http://127.0.0.1:8200/v1/kv/data/hello
+
+
+[root@centos ~]# curl \
+>     -H "X-Vault-Token: $VAULT_TOKEN" \
+>     -H "Content-Type: application/json" \
+>     -X POST \
+>     -d '{ "data": { "foo": "world" } }' \
+>     http://127.0.0.1:8200/v1/kv/data/hello
+{"request_id":"38484645-aaf4-7cd8-f52b-50a761955875","lease_id":"","renewable":false,"lease_duration":0,"data":{"created_time":"2020-12-26T04:12:59.685719631Z","deletion_time":"","destroyed":false,"version":1},"wrap_info":null,"warnings":null,"auth":null}
+
+
+
+# Read the secret:
+
+curl \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -X GET \
+    http://127.0.0.1:8200/v1/kv/data/hello
+
+[root@centos ~]# curl \
+>     -H "X-Vault-Token: $VAULT_TOKEN" \
+>     -X GET \
+>     http://127.0.0.1:8200/v1/kv/data/hello
+{"request_id":"cea088f9-2f92-e7c5-6ddd-0d93e844dcdb","lease_id":"",
+"renewable":false,"lease_duration":0,
+"data":{"data":{"foo":"world"},
+"metadata":{"created_time":"2020-12-26T04:12:59.685719631Z","deletion_time":"",
+"destroyed":false,"version":1}},"wrap_info":null,"warnings":null,"auth":null}
+
+
+
+http://192.168.1.200:8200/ui/vault
+
+
+
+
+
+
+
+
+
+
+
+
+curl \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d '{ "data": { "foo": "world" } }' \
+    http://127.0.0.1:8200/v1/kv/data/app1/user
+	
+	
+curl \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d '{ "data": { "teo": "world" } }' \
+    http://127.0.0.1:8200/v1/kv/data/app1/user
+
+
+
+
+
+curl \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d '{ "data": { "teo": "{\"tuong\":\"heo\"}" } }' \
+    http://127.0.0.1:8200/v1/kv/data/app1/user
+	
+	
+curl \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -X GET \
+    http://127.0.0.1:8200/v1/kv/data/app1/user
+	
+	
+[root@centos ~]# curl \
+>     -H "X-Vault-Token: $VAULT_TOKEN" \
+>     -X GET \
+>     http://127.0.0.1:8200/v1/kv/data/app1/user
+{"request_id":"2efc429e-b33d-61cb-2a5b-c361961ee065","lease_id":"","renewable":false
+,"lease_duration":0,"data":{"data":{"teo":"world"},
+"metadata":{"created_time":"2020-12-26T04:21:29.372508317Z","deletion_time":"",
+"destroyed":false,"version":2}},"wrap_info":null,"warnings":null,"auth":null}
+
+
+curl \
+    -H "X-Vault-Token: $VAULT_TOKEN" \
+    -X GET \
+    http://127.0.0.1:8200/v2/kv/data/app1/user
+	
+
+
+
+
+## Policies
+Add a new config file called app-policy.json to "vault/policies":
+{
+  "path": {
+    "kv/data/app/*": {
+      "policy": "read"
+    }
+  }
+}
+bash-5.0# vault policy write app /vault/policies/app-policy.json
+Success! Uploaded policy: app
+
+## Then, create a new token:
+
+bash-5.0# vault token create -policy=app
+Key                  Value
+---                  -----
+token                s.UEB6KXLqvVz1URmFdNe4K6dt
+token_accessor       46nDMPiUADwvRXMIqD4PY9BE
+token_duration       768h
+token_renewable      true
+token_policies       ["app" "default"]
+identity_policies    []
+policies             ["app" "default"]
+
+
+## token chi dung cho app
+ export VAULT_TOKEN=s.UEB6KXLqvVz1URmFdNe4K6dt
+ 
+[root@centos ~]# curl \
+>     -H "X-Vault-Token: $VAULT_TOKEN" \
+>     -X GET \
+>     http://127.0.0.1:8200/v1/kv/data/hello
+{"errors":["1 error occurred:\n\t* permission denied\n\n"]}
+ 
+ 
+Back within the bash session in the container, add a new secret to the app/test path:
+ 
+bash-5.0# vault kv put kv/app/test ping=pong
+Key              Value
+---              -----
+created_time     2020-12-26T05:43:50.513034006Z
+deletion_time    n/a
+destroyed        false
+version          1
+
+
+
+Tren key cho app
+[root@centos ~]#  curl \
+>     -H "X-Vault-Token: $VAULT_TOKEN" \
+>     -X GET \
+>     http://127.0.0.1:8200/v1/kv/data/app/test
+{"request_id":"aea3913e-d20e-55fb-f5bd-c8a4e84b14bb","lease_id":"","renewable":false,"lease_duration":0,
+"data":{"data":{"ping":"pong"},"metadata":{"created_time":"2020-12-26T05:43:50.513034006Z",
+"deletion_time":"","destroyed":false,"version":1}},"wrap_info":null,
+"warnings":null,"auth":null}
+
+
+
+
+# Encryption as a Service
+ vault secrets enable transit
+
+#Configure a named encryption key:
+vault write -f transit/keys/foo
+
+#Encrypt:
+bash-5.0# vault write transit/encrypt/foo plaintext=$(base64 <<< "my precious")
+Key           Value
+---           -----
+ciphertext    vault:v1:i/Fny0fe4tEZ8qPyJ7Ls/VfQNvEImivIWYbGqSlAahZA7PeTO8DF6g==
+
+
+
+vault write transit/decrypt/foo ciphertext=vault:v1:i/Fny0fe4tEZ8qPyJ7Ls/VfQNvEImivIWYbGqSlAahZA7PeTO8DF6g==
+
+bash-5.0# vault write transit/decrypt/foo ciphertext=vault:v1:i/Fny0fe4tEZ8qPyJ7Ls/VfQNvEImivIWYbGqSlAahZA7PeTO8DF6g==
+Key          Value
+---          -----
+plaintext    bXkgcHJlY2lvdXMK
+
+#Decode:
+base64 -d <<< "bXkgcHJlY2lvdXMK"
+
+
+
+vault:v1:8ekq+edUo9puw+F8NJhlHpzriMU19e1PPdg5QMr+gJ3T7wJoo50=
+
+#decrypt:
+dHVvbmdfcGFzcw==
+
+base64 -d <<< "dHVvbmdfcGFzcw=="
+bash-5.0# base64 -d <<< "dHVvbmdfcGFzcw=="
+tuong_passbash-5.0#
+
+
+
+
+#Consul Backend
+

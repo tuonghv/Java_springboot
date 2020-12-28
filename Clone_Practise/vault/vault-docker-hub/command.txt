@@ -1,0 +1,150 @@
+
+
+https://blog.ruanbekker.com/blog/2019/05/06/setup-hashicorp-vault-server-on-docker-and-cli-guide/
+https://www.vaultproject.io/docs/secrets/kv/kv-v2
+https://www.marcolancini.it/2017/blog-vault/
+
+cd /home/vault/vault-docker-hub
+
+docker-compose up
+
+docker exec -it  vault sh
+export VAULT_ADDR='http://127.0.0.1:8200'
+vault operator init -key-shares=6 -key-threshold=3
+
+/ # vault operator init -key-shares=6 -key-threshold=3
+Unseal Key 1: la7QLJUsgtkc7r14b3vjY+yERa8NDNRRTNCa5VnLu9ju
+Unseal Key 2: JaQ1m3L7YJxYsFlRfj0FRLN1I2q9CPpS9XDie/y3ESpN
+Unseal Key 3: vBq70r65NWJPS2zu034bP5K+KdXqUwadWOYl+IpMgmpn
+Unseal Key 4: TxJZb2vtBYUHYiV0NiIQb8XSbBRYM1uUmbRzARPXRyia
+Unseal Key 5: xpHY4EgBe1om50bbBkiBdb+5DzoNRmASjFS/DWQA1DCj
+Unseal Key 6: MnwRi63L/vNarpU8tqWzx4uIn9LIvmAHLDEZ/OPLEGZc
+
+Initial Root Token: s.lOULxLr6ZetqmMBkHIJMwq9v
+
+vault operator unseal la7QLJUsgtkc7r14b3vjY+yERa8NDNRRTNCa5VnLu9ju
+vault operator unseal JaQ1m3L7YJxYsFlRfj0FRLN1I2q9CPpS9XDie/y3ESpN
+vault operator unseal vBq70r65NWJPS2zu034bP5K+KdXqUwadWOYl+IpMgmpn
+
+
+## xem log
+vault    | 2020-12-26T09:51:47.237Z [INFO]  core: vault is unsealed
+
+
+/ # vault status -format=json
+{
+  "type": "shamir",
+  "initialized": true,
+  "sealed": false,
+  "t": 3,
+  "n": 6,
+  "progress": 0,
+  "nonce": "",
+  "version": "1.6.1",
+  "migration": false,
+  "cluster_name": "vault-cluster-83b941ab",
+  "cluster_id": "a3bceda0-600a-a67c-0e45-4b2b8ebcbe31",
+  "recovery_seal": false,
+  "storage_type": "file",
+  "ha_enabled": false
+}
+
+
+vault login s.lOULxLr6ZetqmMBkHIJMwq9v
+vault secrets enable -version=1 -path=secret kv
+vault kv put secret/my-app/password password=123
+vault kv list secret/
+
+vault kv get secret/my-app/password
+vault kv get --format=json secret/my-app/password
+vault kv get -field=password secret/my-app/password
+
+#Key with Multiple Secrets
+vault kv put secret/reminders/app db_username=db.ruanbekker.com username=root password=secret
+
+
+/ # vault kv get --format=json secret/reminders/app
+{
+  "request_id": "0b0cdc26-5529-1537-6db9-087f542fca25",
+  "lease_id": "",
+  "lease_duration": 2764800,
+  "renewable": false,
+  "data": {
+    "db_username": "db.ruanbekker.com",
+    "password": "secret",
+    "username": "root"
+  },
+  "warnings": null
+}
+
+
+ vault kv get -field=username secret/reminders/app
+ 
+ 
+  vault kv delete secret/reminders
+  
+  
+#Versioning
+
+#bat version 2
+vault secrets enable -version=2 kv
+
+/ # vault secrets enable -version=2 kv
+Success! Enabled the kv secrets engine at: kv/
+
+/ # vault kv enable-versioning secret/
+Success! Tuned the secrets engine at: secret/
+
+/ # vault kv metadata put -max-versions=5 secret/fooapp/appname
+Success! Data written to: secret/metadata/fooapp/appname
+
+## YEAH
+
+/ # vault kv metadata get secret/fooapp/appname
+========== Metadata ==========
+Key                     Value
+---                     -----
+cas_required            false
+created_time            2020-12-26T10:02:17.934403077Z
+current_version         0
+delete_version_after    0s
+max_versions            5
+oldest_version          0
+updated_time            2020-12-26T10:02:17.934403077Z
+
+
+/ # vault kv put secret/fooapp/appname appname=app1
+Key              Value
+---              -----
+created_time     2020-12-26T10:03:35.373547348Z
+deletion_time    n/a
+destroyed        false
+version          1
+
+
+/ # vault kv put secret/fooapp/appname appname=app2
+Key              Value
+---              -----
+created_time     2020-12-26T10:03:59.598223192Z
+deletion_time    n/a
+destroyed        false
+version          2
+
+
+vault kv put secret/fooapp/appname appname=app3
+
+
+vault kv get -field=appname secret/fooapp/appname
+ vault kv get -field=appname -version=2 secret/fooapp/appname
+ 
+ 
+# BEN kv
+/ # vault kv put kv/foo bar=precious
+Key              Value
+---              -----
+created_time     2020-12-26T10:08:54.870831872Z
+deletion_time    n/a
+destroyed        false
+version          1
+
+ 

@@ -1,0 +1,26 @@
+https://github.com/lightbend/config
+
+
+-Dconfig.file=my_app.conf
+
+ java -Dconfig.file=/home/maven_project/application1.conf -cp ./target/my-app-1.0-SNAPSHOT.jar com.mycompany.app.App 
+ java -cp ./my-app-1.0-SNAPSHOT.jar com.mycompany.app.App -Dconfig.file=application1.conf
+ 
+
+cd /home/maven_project/my-app/target
+ java \
+  -Dconfig.file=application1.conf \
+  -cp my-app-1.0-SNAPSHOT.jar \
+  com.mycompany.app.App
+  
+ java \
+  -Dconfig.file=/home/maven_project/application1.conf \
+  -cp my-app-1.0-SNAPSHOT.jar \
+  com.mycompany.app.App
+  
+  
+  
+Trong spring
+https://docs.spring.io/spring-boot/docs/1.4.1.RELEASE/reference/html/boot-features-external-config.html
+ java -jar myproject.jar --spring.config.location=classpath:/default.properties,classpath:/override.properties
+ java -Dspring.application.json='{"foo":"bar"}' -jar myapp.jar

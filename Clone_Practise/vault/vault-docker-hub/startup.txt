@@ -1,0 +1,18 @@
+
+cd /home/vault/vault-docker-hub
+docker-compose up
+
+
+## lan dau tien
+docker exec -it vault 
+sh /vault/_scripts/setup.sh
+
+docker exec -i vault sh <<EOF
+sh /vault/_scripts/setup.sh
+EOF
+
+## lan 2
+docker exec -i vault sh <<EOF
+sh /vault/_scripts/unseal.sh
+EOF
+
