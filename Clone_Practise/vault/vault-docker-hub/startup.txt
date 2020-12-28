@@ -12,6 +12,7 @@ sh /vault/_scripts/setup.sh
 EOF
 
 ## lan 2
+cd /home/vault/vault-docker-hub
 docker exec -i vault sh <<EOF
 sh /vault/_scripts/unseal.sh
 EOF

@@ -148,3 +148,40 @@ destroyed        false
 version          1
 
  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Unseal Key 1: Y0/bHjfdzOlFU93k0+5ceH78kgoMJTwuzzbGNj3bSt7f
+Unseal Key 2: btkMYTn5GFpZiDPJnMm/ZEvSiSNr7Wxzt3eopCdrQzWU
+Unseal Key 3: GXY3Nk+xAQ3oOR3Ex8aaC2tqVXbtYqdgyW2uzfBg9g6s
+Unseal Key 4: 1Weipcc92LyFDuqWRx5Ge6ciSHU810Zls0DKAMTz75FD
+Unseal Key 5: wyEK3EVBUHDcvJp3cIVIJIswn353nd+4rdIvbCTt/E/I
+
+Initial Root Token: s.niI2lSPuFkSFXKzarfukTcWl
+
+Vault initialized with 5 key shares and a key threshold of 3. Please securely
+distribute the key shares printed above. When the Vault is re-sealed,
+restarted, or stopped, you must supply at least 3 of these keys to unseal it
+before it can start servicing requests.
+
+Vault does not store the generated master key. Without at least 3 key to
+reconstruct the master key, Vault will remain permanently sealed!
+
+It is possible to generate new unseal keys, provided you have a quorum of
+existing unseal keys shares. See "vault operator rekey" for more information.
+
+docker exec -it  vault sh
+export VAULT_ADDR='http://127.0.0.1:8200'
+vault login s.niI2lSPuFkSFXKzarfukTcWl
+
+
+vault secrets enable -version=1 -path=secret kv
+vault secrets enable -version=2 kv
+vault kv enable-versioning secret/
+
