@@ -1,0 +1,71 @@
+
+ 1001  export NOMAD_VERSION="1.0.1"
+ 1002  curl --silent --remote-name https://releases.hashicorp.com/nomad/${NOMAD_VERSION}/nomad_${NOMAD_VERSION}_linux_amd64.zip
+ 1003  unzip nomad_${NOMAD_VERSION}_linux_amd64.zip
+ 1004  sudo chown root:root nomad
+ 1005  sudo mv nomad /usr/local/bin/
+ 1006  nomad version
+ 1007  nomad -autocomplete-install
+ 1008  cat /root/.bashrc
+ 1009  sudo touch /etc/systemd/system/nomad.service
+ 1010  sudo mkdir --parents /etc/nomad.d
+ 1011  sudo chmod 700 /etc/nomad.d
+ 1012  sudo touch /etc/nomad.d/nomad.hcl
+ 1013  sudo touch /etc/nomad.d/server.hcl
+ 1014  sudo touch /etc/nomad.d/client.hcl
+ 1015  sudo systemctl enable nomad
+ 1016  sudo systemctl start nomad
+ 1017  sudo systemctl status nomad
+
+
+
+#https://releases.hashicorp.com/nomad/
+#https://learn.hashicorp.com/tutorials/nomad/production-deployment-guide-vm-with-consul#download-nomad
+https://learn.hashicorp.com/tutorials/nomad/access-control?in=nomad/access-control
+
+export NOMAD_VERSION="1.0.1"
+
+
+unzip nomad_${NOMAD_VERSION}_linux_amd64.zip
+sudo chown root:root nomad
+sudo mv nomad /usr/local/bin/
+[root@centos nomad]# nomad -autocomplete-install
+Error executing CLI: 2 errors occurred:
+        * already installed in /root/.bashrc
+        * already installed at /root/.config/fish/completions/nomad.fish
+		
+[root@centos nomad]# sudo systemctl status nomad
+● nomad.service - Nomad
+   Loaded: loaded (/etc/systemd/system/nomad.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2021-01-02 09:55:43 EST; 8s ago
+     Docs: https://nomadproject.io/docs/
+ Main PID: 9416 (nomad)
+    Tasks: 8
+   Memory: 17.8M
+   CGroup: /system.slice/nomad.service
+           └─9416 /usr/local/bin/nomad agent -config /etc/nomad.d
+
+
+
+##minecraft
+## https://dzone.com/articles/deploying-spring-cloud-microservices-on-hashicorps
+## https://burkey.dev/post/learning-nomad-scheduling-minecraft/
+
+nomad job run minecraft.nomad
+ 
+nomad status minecraft
+nomad alloc status 2d59c72b
+
+nomad job plan minecraft.nomad
+
+
+nomad job run echo.nomad
+
+nomad status http-echo
+nomad job plan echo.nomad
+
+nomad alloc status 5c4cb3dc
+
+Allocation Addresses
+Label      Dynamic  Address
+*pingport  yes      192.168.1.200:21040 -> 8080

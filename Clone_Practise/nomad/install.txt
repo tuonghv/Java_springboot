@@ -1,0 +1,50 @@
+
+sudo yum install -y yum-utils
+ sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo 
+ sudo yum -y install nomad
+sudo nomad agent -dev
+ nomad node status
+  nomad server members
+  
+##https://learn.hashicorp.com/tutorials/nomad/get-started-jobs  
+# fist job
+nomad job init
+nomad job run example.nomad
+nomad status example
+nomad alloc status 42c5f0b1
+
+nomad alloc logs 42c5f0b1 redis
+
+nomad job plan example.nomad
+
+nomad job run -check-index 13 example.nomad
+nomad job plan example.nomad
+nomad status example
+
+
+https://learn.hashicorp.com/tutorials/nomad/get-started-cluster?in=nomad/get-started
+toi bang cluster
+
+
+nomad agent -config server.hcl
+mkdir /tmp/client1
+sudo nomad agent -config client1.hcl
+
+
+nomad job run example.nomad
+nomad status example
+
+
+http://192.168.1.200:4646
+
+
+
+
+xem tiep
+
+https://learn.hashicorp.com/collections/nomad/get-started
+
+
+
+
+
