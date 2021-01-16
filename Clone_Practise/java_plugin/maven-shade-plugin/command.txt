@@ -1,0 +1,16 @@
+# don gian
+mvn clean package
+
+java -jar target/json_test-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+
+-- muon install va maven
+mvn install
+
+
+
+
+
+# shaded
+ mvn clean package
+ java -jar target/json_test-1.0.0-SNAPSHOT-shaded.jar
+
