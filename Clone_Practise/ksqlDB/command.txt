@@ -1,0 +1,57 @@
+# https://ksqldb.io/quickstart.html
+
+docker exec -it ksqldb-cli ksql http://ksqldb-server:8088
+
+CREATE STREAM riderLocations (profileId VARCHAR, latitude DOUBLE, longitude DOUBLE)
+  WITH (kafka_topic='locations', value_format='json', partitions=1);
+  
+  
+  
+INSERT INTO riderLocations (profileId, latitude, longitude) VALUES ('c2309eec', 37.7877, -122.4205);
+INSERT INTO riderLocations (profileId, latitude, longitude) VALUES ('18f4ea86', 37.3903, -122.0643);
+INSERT INTO riderLocations (profileId, latitude, longitude) VALUES ('4ab5cbad', 37.3952, -122.0813);
+INSERT INTO riderLocations (profileId, latitude, longitude) VALUES ('8b6eae59', 37.3944, -122.0813);
+INSERT INTO riderLocations (profileId, latitude, longitude) VALUES ('4a7c7b41', 37.4049, -122.0822);
+INSERT INTO riderLocations (profileId, latitude, longitude) VALUES ('4ddad000', 37.7857, -122.4011);
+
+ docker exec -it broker sh
+ cd /bin
+
+kafka-topics --list --zookeeper zookeeper:2181
+kafka-console-consumer --topic locations --from-beginning --bootstrap-server localhost:9092
+
+sh-4.4$ kafka-console-consumer --topic locations --from-beginning --bootstrap-server localhost:9092
+{"PROFILEID":"c2309eec","LATITUDE":37.7877,"LONGITUDE":-122.4205}
+{"PROFILEID":"18f4ea86","LATITUDE":37.3903,"LONGITUDE":-122.0643}
+{"PROFILEID":"4ab5cbad","LATITUDE":37.3952,"LONGITUDE":-122.0813}
+{"PROFILEID":"8b6eae59","LATITUDE":37.3944,"LONGITUDE":-122.0813}
+{"PROFILEID":"4a7c7b41","LATITUDE":37.4049,"LONGITUDE":-122.0822}
+{"PROFILEID":"4ddad000","LATITUDE":37.7857,"LONGITUDE":-122.4011}
+{"PROFILEID":"4ab5cbad","LATITUDE":37.3952,"LONGITUDE":-122.0813}
+{"PROFILEID":"8b6eae59","LATITUDE":37.3944,"LONGITUDE":-122.0813}
+{"PROFILEID":"4a7c7b41","LATITUDE":37.4049,"LONGITUDE":-122.0822}
+{"PROFILEID":"4ddad000","LATITUDE":37.7857,"LONGITUDE":-122.4011}
+{"PROFILEID":"c2309eec","LATITUDE":37.7877,"LONGITUDE":-122.4205}
+{"PROFILEID":"18f4ea86","LATITUDE":37.3903,"LONGITUDE":-122.0643}
+{"PROFILEID":"4ab5cbad","LATITUDE":37.3952,"LONGITUDE":-122.0813}
+{"PROFILEID":"8b6eae59","LATITUDE":37.3944,"LONGITUDE":-122.0813}
+{"PROFILEID":"4a7c7b41","LATITUDE":37.4049,"LONGITUDE":-122.0822}
+{"PROFILEID":"4ddad000","LATITUDE":37.7857,"LONGITUDE":-122.4011}
+{"PROFILEID":"c2309eec","LATITUDE":37.7877,"LONGITUDE":-122.4205}
+{"PROFILEID":"18f4ea86","LATITUDE":37.3903,"LONGITUDE":-122.0643}
+{"PROFILEID":"4ab5cbad","LATITUDE":37.3952,"LONGITUDE":-122.0813}
+{"PROFILEID":"8b6eae59","LATITUDE":37.3944,"LONGITUDE":-122.0813}
+{"PROFILEID":"4a7c7b41","LATITUDE":37.4049,"LONGITUDE":-122.0822}
+{"PROFILEID":"4ddad000","LATITUDE":37.7857,"LONGITUDE":-122.4011}
+
+
+
+
+
+
+CREATE STREAM riderLocations (profileId VARCHAR, latitude DOUBLE, longitude DOUBLE)
+  WITH (kafka_topic='locations', value_format='json', partitions=1);
+  
+
+CREATE TABLE t_riderLocations (profileId VARCHAR, latitude DOUBLE, longitude DOUBLE)
+  WITH (kafka_topic='locations', value_format='json', partitions=1);
