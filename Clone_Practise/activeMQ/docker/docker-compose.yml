@@ -1,0 +1,14 @@
+version: '2'
+services:
+  activemq:
+    image: rmohr/activemq
+    hostname: activemq
+    container_name: activemq
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+      - "5672:5672"
+    volumes:
+      - $PWD/conf:/opt/activemq/conf
+      - $PWD/data:/opt/activemq/data
+

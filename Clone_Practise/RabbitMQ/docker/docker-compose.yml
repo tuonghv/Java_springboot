@@ -1,0 +1,14 @@
+version: '2'
+services:
+  rabbitmq:
+    image: rabbitmq:3.8.11-management
+    volumes:
+      - ./data:/var/lib/rabbitmq:rw
+      - ./logs/:/var/log/rabbitmq/
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "secret-cookie-here"
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin

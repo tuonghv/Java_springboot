@@ -1,0 +1,19 @@
+
+## tao config
+docker run --user root --rm -ti \
+  -v /home/activeMQ/docker/conf:/mnt/conf \
+  -v /home/activeMQ/docker/data:/mnt/data \
+  rmohr/activemq /bin/sh
+  
+chown activemq:activemq /mnt/conf
+chown activemq:activemq /mnt/data
+cp -a /opt/activemq/conf/* /mnt/conf/
+cp -a /opt/activemq/data/* /mnt/data/
+exit
+
+## chay container
+docker-compose up 
+
+
+http://192.168.1.200:8161/admin/
+user: admin/admin

@@ -1,0 +1,25 @@
+
+[root@centos ~]# cd /home/activeMQ/docker
+[root@centos docker]# docker-compose up -d
+
+
+
+
+cd /home/activeMQ/activemq-springjms-demo
+java -cp target/activemq-springjms-demo-0.0.1-SNAPSHOT-jar-with-dependencies.jar jcg.demo.activemq.app.OnBoardNewCustomerApp
+
+java -cp target/activemq-springjms-demo-0.0.1-SNAPSHOT-jar-with-dependencies.jar jcg.demo.activemq.app.ActiveMQMessageConsumerMainApp
+
+java -cp target/activemq-springjms-demo-0.0.1-SNAPSHOT-jar-with-dependencies.jar jcg.demo.spring.jms.app.ConfigSupportForNewCustomerApp
+
+
+java -cp target/activemq-springjms-demo-0.0.1-SNAPSHOT-jar-with-dependencies.jar jcg.demo.spring.jms.app.ConfigBillingForNewCustomerApp
+
+java -cp target/activemq-springjms-demo-0.0.1-SNAPSHOT-jar-with-dependencies.jar jcg.demo.spring.jms.app.SpringJmsApp
+procuder: test.group1.queue1"
+main: GroupQueueListener receiveMessage.
+group1Queue1Listener receives {"type":"NEWCUSTOMER","customerId":21}
+
+Consumer.Billing.VirtualTopic.Customer.Topic
+Consumer.Support.VirtualTopic.Customer.Topic
+
